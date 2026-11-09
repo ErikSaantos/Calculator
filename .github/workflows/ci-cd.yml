@@ -6,16 +6,9 @@ on:
   pull_request:
     branches: [ main ]
 
-# Permissões necessárias para publicar no GitHub Pages
+# Permissões necessárias para criar e atualizar a branch gh-pages
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Permite apenas um deploy concorrente por vez
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  contents: write
 
 jobs:
   # ==========================================
@@ -26,10 +19,10 @@ jobs:
     name: CI - Testes e Validações
     runs-on: ubuntu-latest
     steps:
-      - name: 1. Checkout do código
+      - name: 1. Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: 2. Configurar Node.js
+      - name: 2. Configurar ambiente Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -38,34 +31,25 @@ jobs:
         run: |
           npm install
 
-      - name: 4. Executar testes automatizados
+      - name: 4. Executar bateria de testes automatizados
         run: |
           npm test
 
   # ==========================================
   # Entrega / Deployment Contínuo (CD)
-  # Executa SOMENTE após push na main e SE a CI tiver sucesso
+  # Executa SOMENTE em push na branch main e SE a etapa de CI tiver sucesso
   # ==========================================
   cd:
     name: CD - Deploy no GitHub Pages
     runs-on: ubuntu-latest
     needs: ci
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: 1. Checkout do código
+      - name: 1. Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: 2. Configurar GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: 3. Empacotar artefatos para o Pages
-        uses: actions/upload-pages-artifact@v3
+      - name: 2. Publicar no GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: '.'
-
-      - name: 4. Deploy no GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          folder: .
+          branch: gh-pages
