@@ -1,21 +1,30 @@
 function clean(){
-    document.getElementById('screen').value = ''
+    const screen = document.getElementById('screen');
+    if (screen) screen.value = '';
 }
 
 function remove(){
-    const screen = document.getElementById('screen')
-    screen.value = screen.value.slice(0, -1); //gpt helped me
+    const screen = document.getElementById('screen');
+    if (screen) screen.value = screen.value.slice(0, -1); //gpt helped me
 }
 
 function takeDigit(num){
-    document.getElementById('screen').value += num
+    const screen = document.getElementById('screen');
+    if (screen) screen.value += num;
 }
 
-//function showOperation(operation){
-//    document.getElementById('screen').value = operation
-//}
+function calculateValue(expression) {
+    if (!expression) return 0;
+    return Number(eval(expression));
+}
 
 function calculate(){
-    const result = Number(eval(document.getElementById('screen').value))
-    document.getElementById('screen').value = result
+    const screen = document.getElementById('screen');
+    if (screen) {
+        screen.value = calculateValue(screen.value);
+    }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { clean, remove, takeDigit, calculateValue, calculate };
 }
