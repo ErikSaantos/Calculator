@@ -1,0 +1,16 @@
+{
+  "name": "calculator",
+  "version": "1.0.0",
+  "description": "Calculadora simples com CI/CD no GitHub Actions",
+  "main": "script.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "calculator",
+    "ci-cd",
+    "github-actions"
+  ],
+  "author": "ErikSaantos",
+  "license": "MIT"
+}
