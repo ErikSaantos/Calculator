@@ -2,32 +2,29 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 # Permissões necessárias para criar e atualizar a branch gh-pages
 permissions:
   contents: write
 
 jobs:
-  # ==========================================
-  # Integração Contínua (CI)
-  # Executa em push e pull_request para a branch main
-  # ==========================================
+  # CI -> Executa em push e pull_request para a branch main
   ci:
     name: CI - Testes e Validações
     runs-on: ubuntu-latest
     steps:
-      - name: 1. Checkout do repositório
+      - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: 2. Configurar ambiente Node.js
+      - name: Configurar ambiente Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: 3. Instalar dependências
+      - name: Instalar dependências
         run: |
           npm install
 
@@ -35,20 +32,18 @@ jobs:
         run: |
           npm test
 
-  # ==========================================
-  # Entrega / Deployment Contínuo (CD)
-  # Executa SOMENTE em push na branch main e SE a etapa de CI tiver sucesso
-  # ==========================================
+
+  # CD -> Executa SOMENTE em push na branch main e SE a etapa de CI tiver sucesso
   cd:
     name: CD - Deploy no GitHub Pages
     runs-on: ubuntu-latest
     needs: ci
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
-      - name: 1. Checkout do repositório
+      - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: 2. Publicar no GitHub Pages
+      - name: Publicar no GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: .
